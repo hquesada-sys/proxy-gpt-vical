@@ -8,6 +8,7 @@ app.use(express.json());
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz98dFM751zvalTz3oQVJvDl1ERsfAU2ZkMQWSsNVANE_mxu9Wf1sH1elqxSEBM4rCn4g/exec";
 
+// 🔹 ENDPOINT PRINCIPAL
 app.get("/", async (req, res) => {
   try {
     const { proveedor, factura } = req.query;
@@ -30,6 +31,23 @@ app.get("/", async (req, res) => {
       message: "Error al obtener los datos desde Google Apps Script.",
       details: err.message,
     });
+  }
+});
+
+// 🔹 ENDPOINT DE DEBUG
+app.get("/debug", async (req, res) => {
+  try {
+    const response = await fetch(`${SCRIPT_URL}?factura=3980805587`);
+    const data = await response.json();
+    console.log("🔍 DEBUG response JSON:", data);
+    res.json({
+      status: "ok",
+      message: "Debug endpoint reached",
+      sampleData: data,
+    });
+  } catch (err) {
+    console.error("❌ DEBUG error:", err);
+    res.status(500).json({ status: "error", message: err.message });
   }
 });
 
